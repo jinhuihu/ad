@@ -1,0 +1,26 @@
+{
+  "name": "h-fun-tool",
+  "private": false,
+  "version": "0.0.4",
+  "type": "module",
+  "main": "dist/hTool.umd.js",
+  "module": "dist/hTool.es.js",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "jsdoc-to-markdown": "^9.0.5",
+    "vite": "^5.4.10",
+    "vitepress": "^1.5.0"
+  }
+}
