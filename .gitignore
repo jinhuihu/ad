@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+AndroidCaptchaSolver/.gradle/
+AndroidCaptchaSolver/build/
+AndroidCaptchaSolver/app/build/
+AndroidCaptchaSolver/local.properties
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Backup files
+*.backup
+
+# Temp files
+*.log
+/tmp/
