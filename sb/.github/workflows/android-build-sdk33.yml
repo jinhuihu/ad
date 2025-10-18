@@ -1,0 +1,69 @@
+name: Android CI - 使用 SDK 33 编译
+
+on:
+  workflow_dispatch:  # 仅手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v3
+      
+    - name: 设置 JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+        
+    - name: 临时修改为 SDK 33
+      run: |
+        cd AndroidCaptchaSolver/app
+        # 备份原始配置
+        cp build.gradle build.gradle.backup
+        # 修改为 SDK 33
+        sed -i 's/compileSdkVersion 36/compileSdkVersion 33/g' build.gradle
+        sed -i 's/targetSdkVersion 36/targetSdkVersion 33/g' build.gradle
+        sed -i 's/buildToolsVersion "36.1.0"/buildToolsVersion "33.0.0"/g' build.gradle
+        sed -i 's/buildToolsVersion "33.0.0"/buildToolsVersion "33.0.1"/g' build.gradle
+        echo "修改后的 build.gradle:"
+        cat build.gradle
+        
+    - name: 授予 gradlew 执行权限
+      run: |
+        cd AndroidCaptchaSolver
+        chmod +x gradlew
+        
+    - name: 清理项目
+      run: |
+        cd AndroidCaptchaSolver
+        ./gradlew clean
+        
+    - name: 编译 Debug APK (SDK 33)
+      run: |
+        cd AndroidCaptchaSolver
+        ./gradlew assembleDebug --stacktrace
+        
+    - name: 恢复原始配置
+      run: |
+        cd AndroidCaptchaSolver/app
+        mv build.gradle.backup build.gradle
+        
+    - name: 上传 APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug-sdk33
+        path: AndroidCaptchaSolver/app/build/outputs/apk/debug/app-debug.apk
+        
+    - name: 生成编译信息
+      run: |
+        echo "## 使用 SDK 33 编译完成 ✅" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### APK 文件信息" >> $GITHUB_STEP_SUMMARY
+        if [ -f "AndroidCaptchaSolver/app/build/outputs/apk/debug/app-debug.apk" ]; then
+          SIZE=$(ls -lh AndroidCaptchaSolver/app/build/outputs/apk/debug/app-debug.apk | awk '{print $5}')
+          echo "- Debug APK (SDK 33): ✅ ($SIZE)" >> $GITHUB_STEP_SUMMARY
+        fi
+
