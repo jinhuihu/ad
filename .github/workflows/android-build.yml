@@ -2,9 +2,9 @@ name: Android CI - 编译 APK
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ main ]
   workflow_dispatch:  # 允许手动触发
 
 jobs:
